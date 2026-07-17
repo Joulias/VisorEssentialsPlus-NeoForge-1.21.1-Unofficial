@@ -10,4 +10,4 @@ pluginManagement {
 }
 
 rootProject.name = 'VisorEssentialsPlus'
-include 'mod-core', 'mod-forge'
+include 'mod-core', 'mod-fabric', 'mod-forge'

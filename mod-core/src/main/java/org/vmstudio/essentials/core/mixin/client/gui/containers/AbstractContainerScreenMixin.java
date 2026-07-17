@@ -223,6 +223,8 @@ public abstract class AbstractContainerScreenMixin <T extends AbstractContainerM
     }
 
     @Redirect(
+            require = 0,
+            expect = 0,
             method = "renderSlotContents(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/inventory/Slot;Ljava/lang/String;)V",
             at = @At(value = "FIELD", target = "Lnet/minecraft/world/inventory/Slot;x:I")
     )
@@ -230,6 +232,8 @@ public abstract class AbstractContainerScreenMixin <T extends AbstractContainerM
         return visorEssentials$getSlotX(instance);
     }
     @Redirect(
+            require = 0,
+            expect = 0,
             method = "renderSlotContents(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/inventory/Slot;Ljava/lang/String;)V",
             at = @At(value = "FIELD", target = "Lnet/minecraft/world/inventory/Slot;y:I")
     )
@@ -238,6 +242,8 @@ public abstract class AbstractContainerScreenMixin <T extends AbstractContainerM
     }
 
     @Redirect(
+            require = 0,
+            expect = 0,
             method = "renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;IIF)V",
             at = @At(value = "FIELD", target = "Lnet/minecraft/world/inventory/Slot;x:I")
     )
@@ -245,6 +251,8 @@ public abstract class AbstractContainerScreenMixin <T extends AbstractContainerM
         return visorEssentials$getSlotX(instance);
     }
     @Redirect(
+            require = 0,
+            expect = 0,
             method = "renderSlotHighlight(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;IIF)V",
             at = @At(value = "FIELD", target = "Lnet/minecraft/world/inventory/Slot;y:I")
     )

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "visor_essentials",
+  "version": "${version}",
+  "name": "VisorEssentialsPlus",
+  "description": "Essential VR inventory and interface enhancements for Visor on Minecraft 1.21.1.",
+  "authors": [
+    "Joulias"
+  ],
+  "contributors": [
+    "PhoenixRa (original VisorEssentials)"
+  ],
+  "icon": "icon.png",
+  "license": "LGPL-3.0-or-later",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "org.vmstudio.essentials.loader.fabric.VisorEssentialsMod"
+    ]
+  },
+  "mixins": [
+    "visor_essentials.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "fabric-api": ">=0.116.13",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "visor": ">=0.4.0 <0.5.0"
+  }
+}
