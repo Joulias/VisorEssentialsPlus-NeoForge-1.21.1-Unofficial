@@ -1,0 +1,38 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "LGPLv3"
+
+[[mods]]
+modId = "visor_essentials"
+version = "${version}"
+displayName = "VisorEssentialsPlus"
+logoFile = "icon.png"
+authors = "Joulias"
+credits = "Based on the original VisorEssentials project by PhoenixRa."
+description = '''
+Essential VR inventory and interface enhancements for Visor on Minecraft 1.21.1.
+'''
+
+[[dependencies.visor_essentials]]
+modId = "visor"
+type = "required"
+versionRange = "[0.4.0,0.5.0)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.visor_essentials]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1.234,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.visor_essentials]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1]"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config = "visor_essentials.mixins.json"

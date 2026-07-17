@@ -1,0 +1,113 @@
+
+
+buildscript {
+    //-------VERSIONING-------
+    def versionPropsFile = file('version.properties')
+    Properties versionProps = new Properties()
+
+    versionProps.load(new FileInputStream(versionPropsFile))
+
+    def isSnapshot     = versionProps['version.snapshot'].toBoolean()
+    def version_stage= versionProps['version.stage'].toString()
+
+    def version_major  = versionProps['version.major'].toInteger()
+    def version_minor  = versionProps['version.minor'].toInteger()
+    def version_patch  = versionProps['version.patch'].toInteger()
+    def version_build  = versionProps['version.build'].toInteger()
+
+
+    if (isSnapshot) {
+        version = "${version_major}.${version_minor}.${version_patch}${version_stage}-snapshot#${version_build}"
+        System.out.println("VERSIONING-SNAPSHOT")
+    } else {
+        version = "${version_major}.${version_minor}.${version_patch}${version_stage}"
+        System.out.println("VERSIONING-RELEASE")
+
+    }
+
+    project.version = version
+    //-------VERSIONING END-------
+}
+
+plugins {
+    id 'java-library'
+    id 'idea'
+    alias(libs.plugins.architectury)
+    alias(libs.plugins.architectury.loom) apply false
+    alias(libs.plugins.loom.quiltflower) apply false
+}
+
+group = project_group
+base {
+    archivesName = project_name
+}
+
+tasks.named('jar') {
+    enabled = false
+}
+
+architectury {
+    minecraft = libs.versions.minecraftVersion.get()
+}
+
+
+subprojects {
+    apply plugin: "java-library"
+    apply plugin: libs.plugins.architectury.asProvider().get().pluginId
+    apply plugin: libs.plugins.architectury.loom.get().pluginId
+    apply plugin: libs.plugins.loom.quiltflower.get().pluginId
+
+
+
+    group = rootProject.group
+    version = rootProject.version
+    base {
+        archivesName = project_name
+    }
+    loom {
+        silentMojangMappingsLicense()
+    }
+
+    java {
+        withSourcesJar()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release.set(21)
+        options.compilerArgs.addAll([
+                '-Xmaxerrs',
+                '1000',
+                '-Xlint:deprecation'
+        ])
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${libs.versions.minecraftVersion.get()}"
+        mappings loom.layered() {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${libs.versions.minecraftVersion.get()}:${libs.versions.parchment.get()}@zip")
+        }
+
+        compileOnly(libs.bundles.annotations)
+        annotationProcessor(libs.bundles.annotations)
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url "https://maven.fabricmc.net/" }
+        maven { url "https://maven.architectury.dev/" }
+        maven { url "https://maven.neoforged.net/releases/" }
+        maven { url "https://libraries.minecraft.net/" }
+        maven { url = "https://maven.parchmentmc.org" }
+    }
+
+    idea {
+        module {
+            downloadSources = true
+            downloadJavadoc = true
+        }
+    }
+}

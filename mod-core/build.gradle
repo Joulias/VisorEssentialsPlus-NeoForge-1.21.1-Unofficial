@@ -1,0 +1,20 @@
+architectury {
+    common(rootProject.enabled_platforms.split(","))
+}
+
+dependencies {
+    compileOnly(libs.mixin)
+    annotationProcessor(libs.mixin)
+    compileOnly(libs.fabric.loader)
+
+    compileOnly(libs.architectury.lib)
+
+    // Compile and run against the exact locally patched Visor build. Visor remains
+    // an external, required mod and is not bundled into VisorEssentialsPlus.
+    def localVisorJar = rootProject.file(rootProject.local_visor_jar)
+    if (!localVisorJar.exists()) {
+        throw new GradleException("Missing local Visor dependency: ${localVisorJar}")
+    }
+    modImplementation(files(localVisorJar))
+
+}

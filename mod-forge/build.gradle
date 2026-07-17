@@ -1,0 +1,73 @@
+plugins {
+    alias(libs.plugins.shadow)
+}
+
+architectury {
+    platformSetupLoomIde()
+    neoForge {
+        platformPackage = "neoforge"
+    }
+}
+configurations {
+    common
+    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentNeoForge.extendsFrom common
+}
+
+version = "${rootProject.version}-NeoForge-${libs.versions.minecraftVersion.get()}"
+
+dependencies {
+    // Keep Visor external in the published JAR, but present on the NeoForge
+    // compile classpath and in development runs.
+    def localVisorJar = rootProject.file(rootProject.local_visor_jar)
+    if (!localVisorJar.exists()) {
+        throw new GradleException("Missing local Visor dependency: ${localVisorJar}")
+    }
+    modImplementation(files(localVisorJar))
+
+    shadowCommon(project(path: ":mod-core", configuration: "transformProductionNeoForge")) { transitive = false }
+    common(project(path: ":mod-core", configuration: "namedElements")) { transitive false }
+
+    neoForge "net.neoforged:neoforge:${libs.versions.neoforgeVersion.get()}"
+}
+
+processResources {
+    inputs.property "version", parent.version
+
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand "version": parent.version
+    }
+}
+
+shadowJar {
+    exclude "architectury.common.json"
+    exclude "org.joml"
+    exclude "org.lwjgl"
+    exclude "org.slf4j"
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    configurations = [project.configurations.shadowCommon]
+    archiveClassifier.set("dev-shadow")
+
+
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier.set('')
+}
+
+sourcesJar {
+    def commonSources = project(":mod-core").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
